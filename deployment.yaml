@@ -39,7 +39,7 @@ spec:
       spec:
         container: 
           name: aslamgcp
-          image: asia.gcr.io/$PROJECT_ID/Poduction/wooless:aslamgcp:$SHORT_SHA
+          image: asia.gcr.io/$PROJECT_ID/Poduction/wooless:aslamgcp:SHORT_SHA
           imagePullPolicy: Always
           ports:
             containerPort: 80
