@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+
+-----------------------
+apiVersion: v1
+kind: Service
+metadata:
+  name: aslamgcp
+  namespace: production
+  labels:
+    app: aslamgcp
+spec:
+  selector:
+    app: aslamgcp
+  ports:
+    port: 80
+    name: http
+    targetPort: 80
+  type: NodePort
+
+  ----------------------
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: aslamgcp
+    namespace: production
+  spec:
+    selector:
+      matchLabels:
+        app: aslamgcp
+    strategy:
+      type: RollingUpdate
+    template: #Template for container
+      metadata:
+        labels:
+          app: aslamgcp
+      spec:
+        container: 
+          name: aslamgcp
+          image: asia.gcr.io/$PROJECT_ID/Poduction/wooless:aslamgcp:$SHORT_SHA
+          imagePullPolicy: Always
+          ports:
+            containerPort: 80
+            name: aslamgcp
+          resources:
+            request:
+              cpu: 50m
+
+----------------------------
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: aslamgcp
+  namespace: production
+spec:
+  maxReplicas: 25
+  minReplicas: 3
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: aslamgcp
+  targetCPUUtilizationPercentage: 100
+
+----------------------------
+apiVersion: networking.k8s.io/v1
+kind: ingress
+metadata:
+  name: aslamgcp
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: static-ip-1
+    kubernates.io/ingress.allow-http: "false"
+    networking.gke.io/managed-certificates: belajargcp
+spec:
+  rules:
+    host: aslamgcp.my.id
+    http:
+      paths:
+        path: /*
+        pathType: ImplementationSpecific
+        backend:
+          service: 
+            name: aslamgcp
+            port:
+              number: 80
+
+--------------------
+apiVersion: networking.gke.io/v1beta2
+kind: ManagedCertificate
+metadata:
+  name: aslamgcp
+  namespace: production
+spec:
+  domains: aslamgcp.my.id
