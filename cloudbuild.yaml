@@ -19,10 +19,10 @@ steps:
   - id: Deploy-to-GKE
     name: "gcr.io/cloud-builders/gke-deploy"
     args:
-    run
-    filename=deployment.yaml
-    cluster=cluster-production-1
-    location=asia-southeast2-a
+    - run
+    - --filename=deployment.yaml
+    - --cluster=cluster-production-1
+    - --location=asia-southeast2-a
     timeout: 900s
 
   # Global Timeout
