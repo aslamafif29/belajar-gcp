@@ -6,7 +6,7 @@ steps:
 
   - id: Push-docker
     name: 'gcr.io/cloud-builders/docker'
-    args: ['Push', 'asia.gcr.io/$PROJECT_ID/production/aslamgcp:$SHORT_SHA']
+    args: ['Push', 'asia.gcr.io/$PROJECT_ID/production/Belajar GCP:$SHORT_SHA']
     timeout: 900s
 
   - id: envSubst-for-deployment.yml
